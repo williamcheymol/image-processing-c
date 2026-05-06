@@ -1,12 +1,15 @@
 # Image Processing in C
 
+![C](https://img.shields.io/badge/C-99-blue)
+![Status](https://img.shields.io/badge/status-complete-success)
+
 A pixel-level image processing library written in C — no external dependencies. Handles PPM (color) and PGM (grayscale) binary formats end-to-end: file I/O, photometric operations, LUT-based filters, and two resampling methods.
 
 Built as a first-year project at **ENSIIE** (2024–2025). Full report (in French): [`Rapport.pdf`](./Rapport.pdf).
 
 ---
 
-## Project structure
+## Project Structure
 
 ```
 image-processing-c/
@@ -24,7 +27,7 @@ image-processing-c/
 
 ---
 
-## Data structures
+## Data Structures
 
 ```c
 // Single color pixel — R, G, B components
@@ -90,20 +93,6 @@ This runs all 16 operations and writes the results alongside the input files.
 | 14 | `_difference` | Diff between nearest and bilinear upscale |
 | 15 | `_product` | Per-pixel multiplication with mask |
 | 16 | `_mixture` | Alpha-blend with mask: `(1-α)·inverted + α·original` |
-
----
-
-## Key concepts
-
-**LUT (Look-Up Table)** — A 256-entry array pre-computing any intensity mapping. Applied in O(1) per pixel per channel via a single `apply_lut()` function that handles both PPM and PGM uniformly.
-
-**Bilinear interpolation** — When resampling, each output pixel is a weighted average of the 4 surrounding source pixels:
-
-$$P_{\text{new}} = (1-\alpha)(1-\beta)\,P_{11} + \alpha(1-\beta)\,P_{12} + (1-\alpha)\beta\,P_{21} + \alpha\beta\,P_{22}$$
-
-where $\alpha$, $\beta$ are the fractional offsets within the 2×2 neighbourhood.
-
-**Binary I/O bug** — Reading PPM files in 1 KB blocks introduced a subtle channel-assignment bug: using a block-local index `i % 3` caused the R/G/B mapping to shift after every block boundary (1024 % 3 ≠ 0). Fixed with a global `pixel_index` counter that persists across blocks.
 
 ---
 
